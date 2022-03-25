@@ -1,6 +1,6 @@
 package ru.geekbrains.johnvs.homeworks;
 
-public class HW1_1 {
+public class HW_I_1 {
 
     public static void main(String[] args) {
 

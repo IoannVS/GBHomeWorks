@@ -2,7 +2,7 @@ package ru.geekbrains.johnvs.homeworks;
 
 import java.util.Arrays;
 
-public class HW1_2 {
+public class HW_I_2 {
 
     public static void main(String[] args) {
 
