@@ -1,6 +1,6 @@
 package ru.geekbrains.johnvs.homeworks;
 
-public class HW1_1 {
+public class Main {
 
     public static void main(String[] args) {
 
@@ -67,3 +67,4 @@ public class HW1_1 {
         else System.out.println(year + " год - не високосный");
     }
 }
+
