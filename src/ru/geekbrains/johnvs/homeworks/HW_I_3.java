@@ -4,6 +4,10 @@ import java.util.Scanner;
 
 public class HW_I_3 {
 
+    public static void main(String[] args) {
+        menu();
+    }
+
     static Scanner sc = new Scanner(System.in);
 
     public static void taskOne() {
@@ -141,9 +145,9 @@ public class HW_I_3 {
         } while (active);
     }
 
-    public static void main(String[] args) {
+    public static void menu() {
 
-        System.out.println("Приветствую! К проверке ДЗ готовы оба задания из 3 урока.");
+        System.out.println("\nК проверке ДЗ №3 готовы оба задания.");
         String startLine = "--------------------------------------------------";
         String endLine = "==================================================";
         boolean active = true;
@@ -157,7 +161,7 @@ public class HW_I_3 {
                 sc.nextLine();
                 switch (choice) {
                     case 0 -> {
-                        System.out.println("\nЗавершаем процесс. Удачи :)");
+                        System.out.println("\nЗавершаем процессы...");
                         active = false;
                     }
                     case 1 -> {
