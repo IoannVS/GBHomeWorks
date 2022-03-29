@@ -15,6 +15,7 @@ public class HW_I_3 {
         System.out.println("\n\t\t\tИграем в \"Угадай число\"");
         System.out.println("\nЗадача - угадать число в диапазоне от 0 до 9");
         System.out.println("У вас есть 3 попытки, чтобы отгадать. Удачи :)");
+        // 11 для выхода, т. к. 0 входит в допустимый диапазон чисел в игре
         System.out.println("  -- Введите \"11\", чтобы завершить игру --");
 
         int number = (int) Math.round(Math.random() * 9), userTry, counter = 0;
