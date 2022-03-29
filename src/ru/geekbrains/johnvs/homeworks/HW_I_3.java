@@ -15,6 +15,7 @@ public class HW_I_3 {
         System.out.println("\n\t\t\tИграем в \"Угадай число\"");
         System.out.println("\nЗадача - угадать число в диапазоне от 0 до 9");
         System.out.println("У вас есть 3 попытки, чтобы отгадать. Удачи :)");
+        System.out.println("  -- Введите \"11\", чтобы завершить игру --");
 
         int number = (int) Math.round(Math.random() * 9), userTry, counter = 0;
 
@@ -25,6 +26,12 @@ public class HW_I_3 {
                 userTry = sc.nextInt();
                 sc.nextLine();
                 counter++;
+
+                if (userTry == 11) {
+                    System.out.println("\nЗавершаем игру \"Угадай число\"");
+                    System.out.println("Загаданное число \"" + number + "\".");
+                    break;
+                }
 
                 if (userTry < 0 || userTry > 9) {
                     System.out.println("Число должно быть в диапазоне 0 - 9");
