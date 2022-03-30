@@ -90,7 +90,7 @@ public class HW_I_3 {
                 "broccoli", "carrot", "cherry", "garlic", "grape", "melon",
                 "leak", "kiwi", "mango", "mushroom", "nut", "olive", "pea",
                 "peanut", "pear", "pepper", "pineapple", "pumpkin", "potato"};
-        String askWord = words[(int) (Math.random() * 25)];
+        String askWord = words[(int) (Math.random() * words.length)];
         String showRight = "###############";
 
         int counterLetter = 0, counterTry = 0; // Счетчики отгаданных букв и попыток
