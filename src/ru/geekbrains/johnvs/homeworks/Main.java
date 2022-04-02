@@ -5,11 +5,12 @@ import java.util.Scanner;
 public class Main {
 
     static Scanner sc = new Scanner(System.in);
+    static int counterHomeWorks = 4;
 
     public static void main(String[] args) {
 
         System.out.println("\n\tПриветствую! Здесь можно выбрать урок для проверки.");
-        System.out.println("\nДоступно 3 домашних задания, новые добавляются по мере обучения:");
+        System.out.printf("\nДоступно %d домашних задания, новые добавляются по мере обучения:\n", counterHomeWorks);
         menu();
 
     }
@@ -19,12 +20,13 @@ public class Main {
         boolean active = true;
         String startLine = "--------------------------------------------------";
         String endLine = "==================================================";
+        System.out.println();
+        for (int i = 1; i <= counterHomeWorks; i++) {
+            System.out.printf("   -- \"%d\" - четверть 1, ДЗ %d;\n", i, i);
+        }
+        System.out.println("\n   -- \"0\" - выход из программы.");
+        System.out.print("\nВведите номер урока: ");
         while (active) {
-            System.out.println("\n   -- \"1\" - четверть 1, ДЗ 1;");
-            System.out.println("   -- \"2\" - четверть 1, ДЗ 2;");
-            System.out.println("   -- \"3\" - четверть 1, ДЗ 3;");
-            System.out.println("\n   -- \"0\" - выход из программы.");
-            System.out.print("\nВведите номер урока: ");
             if (sc.hasNextInt()) {
                 int choice = sc.nextInt();
                 sc.nextLine();
@@ -50,14 +52,21 @@ public class Main {
                         other();
                         active = false;
                     }
+                    case 4 -> {
+                        System.out.println(startLine);
+                        HW_I_4.gameStart();
+                        System.out.println(endLine);
+                        other();
+                        active = false;
+                    }
                     case 0 -> {
                         System.out.println("\nЗавершаем процесс... Хорошего дня!");
                         active = false;
                     }
-                    default -> System.out.println("Попробуйте еще раз :)");
+                    default -> System.out.print("Попробуйте еще раз: ");
                 }
             } else {
-                System.out.println("Попробуйте еще раз :)");
+                System.out.print("Попробуйте еще раз: ");
                 sc.nextLine();
             }
         }
@@ -80,12 +89,12 @@ public class Main {
                         flag = false;
                     }
                     default -> {
-                        System.out.println("Попробуйте еще раз :)");
+                        System.out.print("Попробуйте еще раз: ");
                         flag = true;
                     }
                 }
             } else {
-                System.out.println("Попробуйте еще раз :)");
+                System.out.print("Попробуйте еще раз: ");
                 sc.nextLine();
             }
         } while (flag);
