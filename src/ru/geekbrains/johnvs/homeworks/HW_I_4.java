@@ -37,6 +37,7 @@ public class HW_I_4 {
         System.out.println();
         boolean gameOn;
         while (true) {
+            //Если user выбрал "O", то первым ходит компьютер
             if (userDot == 'O') {
                 gameOn = aiTurn();
                 if (!gameOn) break;
@@ -91,13 +92,39 @@ public class HW_I_4 {
     }
 
     /**
+     * Генерируем выигрышные последовательности. Это строки из символов 'X' и 'O', количество которых
+     * определяется dotToWin. В массиве первые две строки для пользователя и для компьютера.
+     * Это позволяет не генерировать подобные строки каждый раз при проверке наличия выигрышной комбинации.
+     * Длина строки ограничена dotsToWin.
+     * Если не включен средний уровень сложности, 3 и 4 строка в массиве остается "null".
+     */
+    public static void getCombsWin() {
+        combsWin[0] = String.valueOf(aiDot).repeat(Math.max(0, dotToWin));
+        combsWin[1] = String.valueOf(userDot).repeat(Math.max(0, dotToWin));
+    }
+
+    /**
+     * Задает значения необходимых переменных для работы метода блокировки потенциально выигрышных ходов
+     * на среднем уровне сложности. Логика проста: убавляем количество точек, необходимых для выигрыша, на 1
+     * и в таком виде проверяем наличие выигрышной комбинации. Это позволяет опережать игрока.
+     */
+    public static void ifBlock() {
+        winDots = dotToWin - 1;
+        lenDots = winDots * 2 - 1;
+        combsWin[2] = String.valueOf(userDot).repeat(Math.max(0, winDots));
+        combsWin[3] = String.valueOf(aiDot).repeat(Math.max(0, winDots));
+    }
+
+    /**
      * <div>
-     *     Переиспользуем код для сокращения его объемов. Передавая различные значения text/marker запрашиваем
+     *     Переиспользуем код для сокращения его объема :) Передавая различные значения text/marker, запрашиваем
      *     ввод необходимых для игры параметров: размера поля, кол-во точек для выигрыша, уровень сложности и
      *     маркер игрока (X/O).
      * </div>
      * <div>
-     *     Отдельно стоит case 0. Это запрос повтора игры после ее завершения
+     *     Отдельно стоят case -1 и case 0:
+     *     Case -1 - выбор между значениями переменных в игре по умолчанию и возможностью присвоить им свои значения
+     *     Case 0 - это предложение сыграть заново после завершения игры.
      * </div>
      * @param text текст вопроса
      * @param marker цифровое значение вопроса, от которого зависит конкретный case
@@ -188,51 +215,6 @@ public class HW_I_4 {
         return (x >= 0 && x < sizeY && y >= 0 && y < sizeX);
     }
 
-    public static boolean userTurn() {
-        int[] dot = new int[2];
-        boolean active = true;
-        do {
-            do {
-                System.out.printf("Ход %d. Введите координаты хода x/y через пробел: ", turnCounter);
-                if (sc.hasNextInt()) {
-                    dot[1] = sc.nextInt() - 1;
-                    dot[0] = sc.nextInt() - 1;
-                    active = false;
-                    sc.nextLine();
-                } else {
-                    sc.nextLine();
-                }
-            } while (active);
-        } while (!isValid(dot[0], dot[1]) || !isEmpty(dot[0], dot[1]));
-        System.out.println();
-        board[dot[1]][dot[0]] = userDot;
-        turnCounter++;
-        showBoard();
-        return checkWin(dot[1], dot[0], 1);
-    }
-
-    public static boolean aiTurn() {
-        int[] dot = new int[2];
-        switch (difLevel) {
-            case 1 -> dot = levelRandom();
-            case 2 -> dot = levelMedium(userDot);
-            case 3 -> dot = levelMediumPlus();
-        }
-        board[dot[0]][dot[1]] = aiDot;
-        System.out.printf("Ход %d. Компьютер: %d, %d%n\n", turnCounter, dot[0] + 1, dot[1] + 1);
-        turnCounter++;
-        showBoard();
-        return checkWin(dot[0], dot[1], 0);
-    }
-
-    public static int[] levelRandom() {
-        int[] dot = new int[2];
-        dot[0] = (int) (Math.random() * sizeX);
-        dot[1] = (int) (Math.random() * sizeY);
-        if (!isEmpty(dot[1], dot[0])) levelRandom();
-        return dot;
-    }
-
     /**
      * Логика проверки выигрыша - все возможные линии относительно координат хода:
      * вертикаль/горизонталь/левая диагональ/правая диагональ - звезда
@@ -309,6 +291,51 @@ public class HW_I_4 {
         } else return true;
     }
 
+    public static boolean userTurn() {
+        int[] dot = new int[2];
+        boolean active = true;
+        do {
+            do {
+                System.out.printf("Ход %d. Введите координаты хода x/y через пробел: ", turnCounter);
+                if (sc.hasNextInt()) {
+                    dot[1] = sc.nextInt() - 1;
+                    dot[0] = sc.nextInt() - 1;
+                    active = false;
+                    sc.nextLine();
+                } else {
+                    sc.nextLine();
+                }
+            } while (active);
+        } while (!isValid(dot[0], dot[1]) || !isEmpty(dot[0], dot[1]));
+        System.out.println();
+        board[dot[1]][dot[0]] = userDot;
+        turnCounter++;
+        showBoard();
+        return checkWin(dot[1], dot[0], 1);
+    }
+
+    public static boolean aiTurn() {
+        int[] dot = new int[2];
+        switch (difLevel) {
+            case 1 -> dot = levelRandom();
+            case 2 -> dot = levelMedium(userDot);
+            case 3 -> dot = levelMediumPlus();
+        }
+        board[dot[0]][dot[1]] = aiDot;
+        System.out.printf("Ход %d. Компьютер выбрал точку: %d, %d%n\n", turnCounter, dot[0] + 1, dot[1] + 1);
+        turnCounter++;
+        showBoard();
+        return checkWin(dot[0], dot[1], 0);
+    }
+
+    public static int[] levelRandom() {
+        int[] dot = new int[2];
+        dot[0] = (int) (Math.random() * sizeX);
+        dot[1] = (int) (Math.random() * sizeY);
+        if (!isEmpty(dot[1], dot[0])) levelRandom();
+        return dot;
+    }
+
     /**
      * Проверяем и блокируем каждую "одинокую точку". Если таковой нет, то ищем потенциально выигрышные ходы
      * и блокируем их. Если и таковых нет, то возвращаем рандомную точку.
@@ -330,11 +357,14 @@ public class HW_I_4 {
     /**
      * <div>
      *     Метод проверки наличия выигрышного хода (с глубиной 2) для компьютера. Ироку теперь нужно думать не только о
-     *     своих точках и попытках обойти блок компьютера.
+     *     своих точках и попытках обойти блок компьютера. Если компьютер увидит возможность выиграть в течение двух
+     *     ходов, он обязательно воспользуется ею, не забыв заблокировать игроку выигрышный ход
      * </div>
      *
      * <div>
-     *     В приоритете компьютера выигрыш, так что сначала будет проверка на его наличие, а уже потом блок ходов игрока
+     *     В приоритете компьютера выигрыш, так что сначала будет проверка на его наличие, а уже потом блок ходов игрока.
+     *     Сначала проверяем возможность компьютера выиграть в один ход. Если ее нет, блокируем user выигрышные ходы.
+     *     Если нет и таковых, возвращаем рандомную точку
      * </div>
      * <div>
      *     P. S.
@@ -355,28 +385,15 @@ public class HW_I_4 {
     }
 
     /**
-     * Генерируем выигрышные последовательности. Это строки из символов 'X' и 'O', количество которых
-     * определяется dotToWin. В массиве две строки: для пользователя и для компьютера.
-     * Это позволяет не генерировать подобные строки каждый раз при проверке наличия выигрышной комбинации.
-     * Длина строки ограничена dotsToWin.
-     * Если не включен средний уровень сложности, 3 строка в массиве остается "null".
+     * Проверяем наличие выигрышной линии и определяем точку, блокирующую/продолжающую ее. Метод используется для
+     * проверки наличия блокирующих потенциально выигрышные ходы игрока и нахождения выигрышных ходов компьютера.
+     * @param dotTurn X/Y - маркер компьютера/игрока,
+     * @param turn цифровое обозначение хода,
+     * @param line количество точек для выигрыша. Нельзя связывать с оригинальным dotToWin, т. к. это не позволит
+     *      *             проверять выигрышные ходы компьютера,
+     * @param len длина выигрышной линии. Нельзя связывать с оригинальной len по той же причине, что и line выше
+     * @return координаты выигрышной/проигрышной точки. Если не найдена - координаты несуществующей точки.
      */
-    public static void getCombsWin() {
-        combsWin[0] = String.valueOf(aiDot).repeat(Math.max(0, dotToWin));
-        combsWin[1] = String.valueOf(userDot).repeat(Math.max(0, dotToWin));
-    }
-
-    /**
-     * Задает значения необходимых переменных для работы метода блокировки
-     * потенциально выигрышных ходов на среднем уровне сложности.
-     */
-    public static void ifBlock() {
-        winDots = dotToWin - 1;
-        lenDots = winDots * 2 - 1;
-        combsWin[2] = String.valueOf(userDot).repeat(Math.max(0, winDots));
-        combsWin[3] = String.valueOf(aiDot).repeat(Math.max(0, winDots));
-    }
-
     public static int[] blockWinLine(char dotTurn, int turn, int line, int len) {
         int[] dot = {sizeX*2, sizeY*2};
         for (int i = 0; i < sizeX; i++) {
@@ -396,10 +413,10 @@ public class HW_I_4 {
     }
 
     /**
-     * Если начать игру не с края поля, то игрок выиграет за несколько ходов, т. к. от точки можно развить линию
-     * в любую сторону и заблокировать ее не удастся. Текущий метод хотя бы частично (с одной стороны)
-     * блокирует "одинокую" точку, чтобы в случае развития ее игроком заблокировать потенциально выигрышную линию
-     * методом blockWinLine
+     * Если начать игру не с края поля (особенно при dotToWin == 3), то игрок выиграет за несколько ходов,
+     * т. к. от точки можно развить линию в любую сторону и заблокировать ее не удастся.
+     * Текущий метод частично (с одной рандомно выбранной стороны) блокирует "одинокую" точку,
+     * чтобы в случае развития ее игроком заблокировать потенциально выигрышную линию методом blockWinLine
      * @return в случае обнаружения такой точки возвращаем координаты блокирующей точки, иначе - координаты
      * заведомо несуществующей точки, чтобы не принимать ее в расчет в levelMedium.
      */
