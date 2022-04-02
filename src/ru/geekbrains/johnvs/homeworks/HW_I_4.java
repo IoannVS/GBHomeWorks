@@ -26,15 +26,23 @@ public class HW_I_4 {
     static String[] combsWin = new String[4];
 
     public static void gameStart() {
-        System.out.println("\n\t\t\t\tПриветствую в игре \"Крестики-нолики\"\n");
-        System.out.println("Внимание! Координатная сетка инвертирована: x - вертикаль, y - горизонталь");
-        System.out.println("Сначала вводится координата x, затем через пробел координата y. Удачи :)");
+        System.out.println("""
+        \n\t\t\t\tПриветствую в игре "Крестики-нолики"
+        
+        Внимание! Координатная сетка инвертирована: X - вертикаль, Y - горизонталь");
+        Сначала вводится координата X, затем через пробел координата Y. Удачи :)
+        
+        \t-- Введите -1 при вводе координат, чтобы завершить игру --
+        """);
         setGameParameters();
         makeBoard();
-        System.out.printf("\nПоле для игры размером %dx%d\nX - вертикаль, Y - горизонталь\n\n", sizeX, sizeY);
+        System.out.printf("\nПоле для игры размером %dx%d\nX - вертикаль, Y - горизонталь!\n\n", sizeX, sizeY);
         showBoard();
-        System.out.println("\nИгра начинается! \"X\" ходит первым!");
-        System.out.println();
+        System.out.println("""
+        Игра начинается! "X" ходит первым!
+                
+        Введите -1 при вводе координат, если желаете завершить игру
+        """);
         boolean gameOn;
         while (true) {
             //Если user выбрал "O", то первым ходит компьютер
@@ -299,6 +307,10 @@ public class HW_I_4 {
                 System.out.printf("Ход %d. Введите координаты хода x/y через пробел: ", turnCounter);
                 if (sc.hasNextInt()) {
                     dot[1] = sc.nextInt() - 1;
+                    if (dot[1] == -2) {
+                        System.out.println("\nЗавершаем процессы...\n");
+                        return false;
+                    }
                     dot[0] = sc.nextInt() - 1;
                     active = false;
                     sc.nextLine();
