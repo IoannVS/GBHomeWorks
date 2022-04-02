@@ -27,7 +27,7 @@ public class HW_I_4 {
 
     public static void gameStart() {
         System.out.println("\n\t\t\t\tПриветствую в игре \"Крестики-нолики\"\n");
-        System.out.println("Внимание! Координатная сетка инвертирована: x - горизонталь, y - вертикаль");
+        System.out.println("Внимание! Координатная сетка инвертирована: x - вертикаль, y - горизонталь");
         System.out.println("Сначала вводится координата x, затем через пробел координата y. Удачи :)");
         setGameParameters();
         makeBoard();
