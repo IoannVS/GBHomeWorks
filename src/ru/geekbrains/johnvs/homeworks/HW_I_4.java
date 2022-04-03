@@ -327,7 +327,7 @@ public class HW_I_4 {
 
     public static boolean checkDraw() {
         String endLine = "==================================";
-        if (turnCounter == sizeY * sizeX) {
+        if (turnCounter > sizeY * sizeX) {
             System.out.println(endLine);
             System.out.println("OMG! Это ничья :)\n");
             return false;
