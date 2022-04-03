@@ -9,6 +9,9 @@ public class HW_I_5 {
     }
 
     public static void show() {
+
+        System.out.println("");
+
         Employee[] employees = new Employee[5];
         employees[0] = new Employee("John Castle","Team Lead", "john_teamlead@gmail.com",
                 79324567890L, 230000, 34);
