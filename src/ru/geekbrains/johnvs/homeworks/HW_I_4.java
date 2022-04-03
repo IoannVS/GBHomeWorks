@@ -149,11 +149,13 @@ public class HW_I_4 {
             System.out.print(text);
             if (sc.hasNextInt()) {
                 switch (marker) {
+                    // Предложение изменить параметры игры
                     case -1 -> {
                         int choice = sc.nextInt();
                         if (choice == -1 || choice == 0 || choice == 1) return choice;
                         sc.nextLine();
                     }
+                    // Запрос повторной игры
                     case 0 -> {
                         int choice = sc.nextInt();
                         if (choice == -1) return choice;
@@ -162,6 +164,7 @@ public class HW_I_4 {
                         else System.out.println("Завершаем процессы...");
                         sc.nextLine();
                     }
+                    // Ввод размеров игрового поля
                     case 1 -> {
                         sizeY = sc.nextInt();
                         if (sizeY == -1) return sizeY;
@@ -170,18 +173,21 @@ public class HW_I_4 {
                         if (sizeX >= 3 && sizeY >= 3) active = false;
                         sc.nextLine();
                     }
+                    // Ввод количества точек для выигрыша
                     case 2 -> {
                         dotToWin = sc.nextInt();
                         if (dotToWin == -1) return dotToWin;
                         if (dotToWin >= 3 && dotToWin <= sizeY && dotToWin <= sizeX) active = false;
                         sc.nextLine();
                     }
+                    // Выбор сложности игры
                     case 3 -> {
                         difLevel = sc.nextInt();
                         if (difLevel == -1) return difLevel;
                         if (difLevel == 1 || difLevel == 2 || difLevel == 3) active = false;
                         sc.nextLine();
                     }
+                    // Выбор игроком X или O
                     case 4 -> {
                         int dot = sc.nextInt();
                         if (dot == -1) return dot;
@@ -321,7 +327,7 @@ public class HW_I_4 {
      * @return в случае прекращения игры (независимо от того, кто выиграл) возвращает false, иначе - true.
      * В месте вызова результат этой функции обрабатывается для продолжения или завершения игры.
      */
-    public static boolean checkWin(int x, int y, int turn) {
+    public static boolean checkWinAndDraw(int x, int y, int turn) {
         String endLine = "==================================";
         boolean winStatus = makeWinStar(x, y, turn, dotToWin, len);
         if (winStatus && turn == 1) {
@@ -332,22 +338,27 @@ public class HW_I_4 {
             System.out.println(endLine);
             System.out.println("\t\tВы проиграли :(");
             return false;
+        } if (checkFullBoard()) {
+            System.out.println(endLine);
+            System.out.println("OMG! Это ничья :)\n");
+            return false;
         } else return true;
     }
 
     /**
-     * Проверка на ничью. Все предельно просто: если счетчик ходов turnCounter больше, чем количество
-     * клеток на поле, то это ничья (это значит метод проверки победы не прервал процесс игры).
-     * @return true если ничья, иначе - false
+     * Проверка на ничью. Все предельно просто: если поле заполнено и ранее не сработало условие
+     * на победу, то это ничья
+     * @return true если пустых клеток нет, иначе - false
      */
-    public static boolean checkDraw() {
-        String endLine = "==================================";
-        if (turnCounter > sizeY * sizeX) {
-            System.out.println(endLine);
-            System.out.println("OMG! Это ничья :)\n");
-            return true;
+    public static boolean checkFullBoard() {
+        for (char[] chars : board) {
+            for (char aChar : chars) {
+                if (aChar == emptyDot) {
+                    return false;
+                }
+            }
         }
-        return false;
+        return true;
     }
 
     /**
@@ -380,8 +391,7 @@ public class HW_I_4 {
         board[dot[1]][dot[0]] = userDot;
         turnCounter++;
         showBoard();
-        if (checkDraw()) return false;
-        return checkWin(dot[1], dot[0], 1);
+        return checkWinAndDraw(dot[1], dot[0], 1);
     }
 
     /**
@@ -396,13 +406,13 @@ public class HW_I_4 {
             case 1 -> dot = levelRandom();
             case 2 -> dot = levelMedium(userDot);
             case 3 -> dot = levelMediumPlus();
+            case 4 -> dot = levelHard();
         }
         board[dot[0]][dot[1]] = aiDot;
         System.out.printf("Ход %d. Компьютер выбрал точку: %d, %d%n\n", turnCounter, dot[0] + 1, dot[1] + 1);
         turnCounter++;
         showBoard();
-        if (checkDraw()) return false;
-        return checkWin(dot[0], dot[1], 0);
+        return checkWinAndDraw(dot[0], dot[1], 0);
     }
 
     public static int[] levelRandom() {
