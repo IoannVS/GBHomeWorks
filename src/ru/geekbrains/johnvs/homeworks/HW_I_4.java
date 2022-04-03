@@ -69,14 +69,19 @@ public class HW_I_4 {
             if (userDot == 'O') {
                 gameOn = aiTurn();
                 if (!gameOn) break;
+                gameOn = checkDraw();
+                if (!gameOn) break;
             }
             gameOn = userTurn();
+            if (!gameOn) break;
+            gameOn = checkDraw();
             if (!gameOn) break;
             if (userDot == 'X') {
                 gameOn = aiTurn();
                 if (!gameOn) break;
+                gameOn = checkDraw();
+                if (!gameOn) break;
             }
-            checkDraw();
         }
         getChoice("Сыграем еще раз? (1 - да, 0 - нет) ", 0);
     }
@@ -320,12 +325,14 @@ public class HW_I_4 {
         } else return true;
     }
 
-    public static void checkDraw() {
+    public static boolean checkDraw() {
         String endLine = "==================================";
-        if (turnCounter > sizeY * sizeX) {
+        if (turnCounter == sizeY * sizeX) {
             System.out.println(endLine);
             System.out.println("OMG! Это ничья :)\n");
+            return false;
         }
+        return true;
     }
 
     public static boolean userTurn() {
