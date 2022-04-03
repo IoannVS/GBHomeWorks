@@ -76,6 +76,7 @@ public class HW_I_4 {
                 gameOn = aiTurn();
                 if (!gameOn) break;
             }
+            checkDraw();
         }
         getChoice("Сыграем еще раз? (1 - да, 0 - нет) ", 0);
     }
@@ -319,6 +320,14 @@ public class HW_I_4 {
         } else return true;
     }
 
+    public static void checkDraw() {
+        String endLine = "==================================";
+        if (turnCounter > sizeY * sizeX) {
+            System.out.println(endLine);
+            System.out.println("OMG! Это ничья :)\n");
+        }
+    }
+
     public static boolean userTurn() {
         int[] dot = new int[2];
         boolean active = true;
@@ -362,9 +371,10 @@ public class HW_I_4 {
 
     public static int[] levelRandom() {
         int[] dot = new int[2];
-        dot[0] = (int) (Math.random() * sizeX);
-        dot[1] = (int) (Math.random() * sizeY);
-        if (!isEmpty(dot[1], dot[0])) levelRandom();
+        do {
+            dot[0] = (int) (Math.random() * sizeX);
+            dot[1] = (int) (Math.random() * sizeY);
+        } while (!isEmpty(dot[1], dot[0]));
         return dot;
     }
 

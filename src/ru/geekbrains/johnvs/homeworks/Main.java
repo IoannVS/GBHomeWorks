@@ -5,12 +5,16 @@ import java.util.Scanner;
 public class Main {
 
     static Scanner sc = new Scanner(System.in);
-    static int counterHomeWorks = 4;
+    static int counterHomeWorks = 5;
 
     public static void main(String[] args) {
 
-        System.out.println("\n\tПриветствую! Здесь можно выбрать урок для проверки.");
-        System.out.printf("\nДоступно %d домашних задания, новые добавляются по мере обучения:\n", counterHomeWorks);
+        System.out.printf("""
+                
+                \tПриветствую! Здесь можно выбрать урок для проверки.
+                
+                Доступно %d домашних задания, новые добавляются по мере обучения:
+                """, counterHomeWorks);
         menu();
 
     }
@@ -55,6 +59,13 @@ public class Main {
                     case 4 -> {
                         System.out.println(startLine);
                         HW_I_4.gameStart();
+                        System.out.println(endLine);
+                        other();
+                        active = false;
+                    }
+                    case 5 -> {
+                        System.out.println(startLine);
+                        HW_I_5.show();
                         System.out.println(endLine);
                         other();
                         active = false;
