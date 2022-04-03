@@ -52,9 +52,12 @@ public class HW_I_4 {
         Внимание! Координатная сетка инвертирована: X - вертикаль, Y - горизонталь");
         Сначала вводится координата X, затем через пробел координата Y. Удачи :)
         
-        \t-- Введите -1 при вводе координат, чтобы завершить игру --
+        \t-- Введите -1 в любом поле ввода, чтобы завершить игру --
         """);
-        setGameParameters();
+        if(setGameParameters()) {
+            System.out.println("\nЗавершаем процессы...");
+            return;
+        }
         makeBoard();
         System.out.printf("\nПоле для игры размером %dx%d\nX - вертикаль, Y - горизонталь!\n\n", sizeX, sizeY);
         showBoard();
@@ -84,28 +87,35 @@ public class HW_I_4 {
      * Настройка переменных, необходимых для игрового процесса. Предлагаем выбор между значениями по умолчанию
      * и возможностью задать свои значения.
      */
-    public static void setGameParameters() {
-        if (getChoice("""
-             Скорректируем параметры игры или оставим по умолчанию?
-                        
-             |\t\t\tЗначения по умолчанию:
-             |
-             |\t-- Поле 14x15 (Возможно установить поле любого размера, но рекомендуется не доходить до 100),
-             |\t-- 4 точки для выигрыша (Возможно установить длину не меньше 3 и не больше длины/ширины поля),
-             |\t-- Уровень сложности 2 - блок (доступно еще два уровня: 1 - рандом и 3 - выигрыш),
-             |\t-- Вы играете "X" (в случае выбора "O" компьютер ходит первым как "X").
-                        
-             \t\tКорректируем параметры игры? (1 - да, 0 - нет):\040""", -1)) {
+    public static boolean setGameParameters() {
+        System.out.println("""
+                |\t\t\tЗначения по умолчанию:
+                |
+                |\t-- Поле 14x15 (Возможно установить поле любого размера, но рекомендуется не доходить до 100),
+                |\t-- 4 точки для выигрыша (Возможно установить длину не меньше 3 и не больше длины/ширины поля),
+                |\t-- Уровень сложности 2 - блок (доступно еще два уровня: 1 - рандом и 3 - выигрыш),
+                |\t-- Вы играете "X" (в случае выбора "O" компьютер ходит первым как "X").
+                """);
+        int choice = getChoice("Корректируем параметры игры? (1 - да, 0 - нет): ", -1);
+        if (choice == -1) return true;
+        if (choice == 1) {
             System.out.println();
-            getChoice("Введите ширину и высоту игрового поля через пробел (минимум 3x3): ", 1);
+            if (getChoice("Введите ширину и высоту игрового поля через пробел (минимум 3x3): ", 1) == -1) {
+                return true;
+            }
             System.out.println();
-            getChoice("Введите количество точек для выигрыша (не меньше 3 и не больше ширины/длины поля): ", 2);
+            if (getChoice("Введите количество точек для выигрыша (не меньше 3 и не больше ширины/длины поля): ",
+                    2) == -1) return true;
             System.out.println();
-            getChoice("Выберите уровень сложности (1 - рандом, 2 - блок, 3 - выигрыш): ", 3);
+            if (getChoice("Выберите уровень сложности (1 - рандом, 2 - блок, 3 - выигрыш): ", 3) == -1) {
+                return true;
+            }
             System.out.println();
-            getChoice("Выберите \"X\" или \"O\" (\"X\" ходит первым) (0 - \"O\", 1 - \"X\"): ", 4);
+            if (getChoice("Выберите \"X\" или \"O\" (\"X\" ходит первым) (0 - \"O\", 1 - \"X\"): ", 4) == -1) {
+                return true;
+            }
         } else {
-            System.out.println("Принято! Оставляем значения игры по умолчанию. Удачи :)");
+            System.out.println("\nПринято! Оставляем значения игры по умолчанию. Удачи :)");
             sizeX = 14;
             sizeY = 15;
             dotToWin = 4;
@@ -117,6 +127,74 @@ public class HW_I_4 {
         turnCounter = 1;
         len = dotToWin * 2 - 1;
         getCombsWin();
+        return false;
+    }
+
+    /**
+     * Переиспользуем код для сокращения его объема :) Передавая различные значения text/marker, запрашиваем
+     * ввод необходимых для игры параметров: размера поля, кол-во точек для выигрыша, уровень сложности и
+     * маркер игрока (X/O).
+     * Отдельно стоят case -1 и case 0:
+     *     Case -1 - выбор между значениями переменных в игре по умолчанию и возможностью присвоить им свои значения
+     *     Case 0 - это предложение сыграть заново после завершения игры.
+     * @param text текст вопроса
+     * @param marker цифровое значение вопроса, от которого зависит конкретный case
+     * @return значения необходимых для игры переменных.
+     * -1 это общий вариант возвращаемого значения для всех case. В этом случае игра будет завершена
+     */
+    public static int getChoice(String text, int marker) {
+        boolean active = true;
+        do {
+            System.out.print(text);
+            if (sc.hasNextInt()) {
+                switch (marker) {
+                    case -1 -> {
+                        int choice = sc.nextInt();
+                        if (choice == -1 || choice == 0 || choice == 1) return choice;
+                        sc.nextLine();
+                    }
+                    case 0 -> {
+                        int choice = sc.nextInt();
+                        if (choice == -1) return choice;
+                        if (choice == 0 || choice == 1) active = false;
+                        if (choice == 1) gameStart();
+                        else System.out.println("Завершаем процессы...");
+                        sc.nextLine();
+                    }
+                    case 1 -> {
+                        sizeY = sc.nextInt();
+                        if (sizeY == -1) return sizeY;
+                        sizeX = sc.nextInt();
+                        if (sizeX == -1) return sizeX;
+                        if (sizeX >= 3 && sizeY >= 3) active = false;
+                        sc.nextLine();
+                    }
+                    case 2 -> {
+                        dotToWin = sc.nextInt();
+                        if (dotToWin == -1) return dotToWin;
+                        if (dotToWin >= 3 && dotToWin <= sizeY && dotToWin <= sizeX) active = false;
+                        sc.nextLine();
+                    }
+                    case 3 -> {
+                        difLevel = sc.nextInt();
+                        if (difLevel == -1) return difLevel;
+                        if (difLevel == 1 || difLevel == 2 || difLevel == 3) active = false;
+                        sc.nextLine();
+                    }
+                    case 4 -> {
+                        int dot = sc.nextInt();
+                        if (dot == -1) return dot;
+                        if (dot == 0 || dot == 1) active = false;
+                        userDot = dot == 1 ? 'X' : 'O';
+                        aiDot = userDot == 'X' ? 'O' : 'X';
+                        sc.nextLine();
+                    }
+                }
+            } else {
+                sc.nextLine();
+            }
+        } while (active);
+        return 1;
     }
 
     /**
@@ -141,69 +219,6 @@ public class HW_I_4 {
         lessLen = lessDots * 2 - 1;
         combsWin[2] = String.valueOf(userDot).repeat(Math.max(0, lessDots));
         combsWin[3] = String.valueOf(aiDot).repeat(Math.max(0, lessDots));
-    }
-
-    /**
-     * <div>
-     *     Переиспользуем код для сокращения его объема :) Передавая различные значения text/marker, запрашиваем
-     *     ввод необходимых для игры параметров: размера поля, кол-во точек для выигрыша, уровень сложности и
-     *     маркер игрока (X/O).
-     * </div>
-     * <div>
-     *     Отдельно стоят case -1 и case 0:
-     *     Case -1 - выбор между значениями переменных в игре по умолчанию и возможностью присвоить им свои значения
-     *     Case 0 - это предложение сыграть заново после завершения игры.
-     * </div>
-     * @param text текст вопроса
-     * @param marker цифровое значение вопроса, от которого зависит конкретный case
-     */
-    public static boolean getChoice(String text, int marker) {
-        boolean active = true;
-        do {
-            System.out.print(text);
-            if (sc.hasNextInt()) {
-                switch (marker) {
-                    case -1 -> {
-                        int choice = sc.nextInt();
-                        if (choice == 0 || choice == 1) return choice == 1;
-                        sc.nextLine();
-                    }
-                    case 0 -> {
-                        int choice = sc.nextInt();
-                        if (choice == 0 || choice == 1) active = false;
-                        if (choice == 1) gameStart();
-                        else System.out.println("Завершаем процессы...");
-                        sc.nextLine();
-                    }
-                    case 1 -> {
-                        sizeY = sc.nextInt();
-                        sizeX = sc.nextInt();
-                        if (sizeX >= 3 && sizeY >= 3) active = false;
-                        sc.nextLine();
-                    }
-                    case 2 -> {
-                        dotToWin = sc.nextInt();
-                        if (dotToWin >= 3 && dotToWin <= sizeY && dotToWin <= sizeX ) active = false;
-                        sc.nextLine();
-                    }
-                    case 3 -> {
-                        difLevel = sc.nextInt();
-                        if (difLevel == 1 || difLevel == 2 || difLevel == 3) active = false;
-                        sc.nextLine();
-                    }
-                    case 4 -> {
-                        int dot = sc.nextInt();
-                        userDot = dot == 1 ? 'X' : 'O';
-                        aiDot = userDot == 'X' ? 'O' : 'X';
-                        if (dot == 0 || dot == 1) active = false;
-                        sc.nextLine();
-                    }
-                }
-            } else {
-                sc.nextLine();
-            }
-        } while (active);
-        return false;
     }
 
     public static void makeBoard() {
@@ -324,9 +339,9 @@ public class HW_I_4 {
         if (turnCounter > sizeY * sizeX) {
             System.out.println(endLine);
             System.out.println("OMG! Это ничья :)\n");
-            return false;
+            return true;
         }
-        return true;
+        return false;
     }
 
     public static boolean userTurn() {
@@ -353,7 +368,7 @@ public class HW_I_4 {
         board[dot[1]][dot[0]] = userDot;
         turnCounter++;
         showBoard();
-        if (!checkDraw()) return false;
+        if (checkDraw()) return false;
         return checkWin(dot[1], dot[0], 1);
     }
 
@@ -368,7 +383,7 @@ public class HW_I_4 {
         System.out.printf("Ход %d. Компьютер выбрал точку: %d, %d%n\n", turnCounter, dot[0] + 1, dot[1] + 1);
         turnCounter++;
         showBoard();
-        if (!checkDraw()) return false;
+        if (checkDraw()) return false;
         return checkWin(dot[0], dot[1], 0);
     }
 
