@@ -4,6 +4,26 @@ import java.util.Scanner;
 
 public class HW_I_4 {
 
+    /*
+    Общие примечания к игре:
+    -- В случае установки большого размера поля (от 10x10), рекомендуется устанавливать значение
+    количества точек для выигрыша не менее 5, т. к. в "пустом" поле, где до краев довольно далеко компьютер чисто
+    технически не успеет заблокировать все выигрышные ходы, т. к. он, как и пользователь ограничен всего 1 ходом подряд,
+    при этом заблокировав одно направление, он может не успеть заблокировать несколько других.
+    -- Возможный диапазон установки значений переменных:
+        - размер поля: минимум 3x3, максимум - не ограничен, но рекомендуется меньше 100,
+        - кол-во точек для выыгрыша: минимум 3, максимум - не больше ширины/длины игрового поля,
+        - в случае выбора игроком "O", компьютер будет ходить первым, т. к. "X" всегда ходит первым,
+        - уровни сложности игры:
+            1. Рандом - генерируем рандомные значения, проверяем клетку на занятость. Если пустая - ставим символ,
+            2. Блок - в приоритете блокировка потенциально выигрышных ходов игрока. Подробнее в описаниие blockAloneDot
+            и blockWinLine,
+            3. Выигрыш - проверка возможности выигрыша компьютера на глубине 1 и 2. Если выигрыш возможен за 1 ход, то
+            действия игрока не проверяются, если за 2 - сначала проверяем возможность выигрыша игрока. Подробнее в
+            описании levelMediumPlus.
+        -
+     */
+
     static Scanner sc = new Scanner(System.in);
 
     public static void main(String[] args) {
@@ -21,7 +41,7 @@ public class HW_I_4 {
     static int dotToWin, len;
     //Переменные аналогичные предыдущим, но с уменьшенными значениями.
     //Необходимы для работы метода блокировки потенциально выигрышных ходов
-    static int winDots, lenDots;
+    static int lessDots, lessLen;
     //Комбинации выигрышных линий. Подробнее см. в описании функции getCombsWin
     static String[] combsWin = new String[4];
 
@@ -117,10 +137,10 @@ public class HW_I_4 {
      * и в таком виде проверяем наличие выигрышной комбинации. Это позволяет опережать игрока.
      */
     public static void ifBlock() {
-        winDots = dotToWin - 1;
-        lenDots = winDots * 2 - 1;
-        combsWin[2] = String.valueOf(userDot).repeat(Math.max(0, winDots));
-        combsWin[3] = String.valueOf(aiDot).repeat(Math.max(0, winDots));
+        lessDots = dotToWin - 1;
+        lessLen = lessDots * 2 - 1;
+        combsWin[2] = String.valueOf(userDot).repeat(Math.max(0, lessDots));
+        combsWin[3] = String.valueOf(aiDot).repeat(Math.max(0, lessDots));
     }
 
     /**
@@ -356,7 +376,7 @@ public class HW_I_4 {
     public static int[] levelMedium(char dotTurn) {
         int[] dot = blockAloneDot(dotTurn);
         if (isValid(dot[1], dot[0])) return dot;
-        dot = blockWinLine(dotTurn, 2, winDots, lenDots);
+        dot = blockWinLine(dotTurn, 2, lessDots, lessLen);
         if (isValid(dot[0], dot[1])) return dot;
         if (difLevel == 3) {
             dot[0] = sizeX * 2;
@@ -389,9 +409,11 @@ public class HW_I_4 {
     public static int[] levelMediumPlus() {
         int[] dot = blockWinLine(aiDot, 0, dotToWin, len);
         if (isValid(dot[1], dot[0])) return dot;
-        dot = levelMedium(userDot);
+        dot = blockWinLine(userDot, 2, lessDots, lessLen);
         if (isValid(dot[0], dot[1])) return dot;
-        dot = blockWinLine(aiDot, 3, winDots, lenDots);
+        dot = blockWinLine(aiDot, 3, lessDots, lessLen);
+        if (isValid(dot[1], dot[0])) return dot;
+        dot = blockAloneDot(userDot);
         if (isValid(dot[1], dot[0])) return dot;
         return levelRandom();
     }
