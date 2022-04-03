@@ -69,17 +69,11 @@ public class HW_I_4 {
             if (userDot == 'O') {
                 gameOn = aiTurn();
                 if (!gameOn) break;
-                gameOn = checkDraw();
-                if (!gameOn) break;
             }
             gameOn = userTurn();
             if (!gameOn) break;
-            gameOn = checkDraw();
-            if (!gameOn) break;
             if (userDot == 'X') {
                 gameOn = aiTurn();
-                if (!gameOn) break;
-                gameOn = checkDraw();
                 if (!gameOn) break;
             }
         }
@@ -359,6 +353,7 @@ public class HW_I_4 {
         board[dot[1]][dot[0]] = userDot;
         turnCounter++;
         showBoard();
+        if (!checkDraw()) return false;
         return checkWin(dot[1], dot[0], 1);
     }
 
@@ -373,6 +368,7 @@ public class HW_I_4 {
         System.out.printf("Ход %d. Компьютер выбрал точку: %d, %d%n\n", turnCounter, dot[0] + 1, dot[1] + 1);
         turnCounter++;
         showBoard();
+        if (!checkDraw()) return false;
         return checkWin(dot[0], dot[1], 0);
     }
 
