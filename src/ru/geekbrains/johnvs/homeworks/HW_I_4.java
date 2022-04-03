@@ -406,7 +406,6 @@ public class HW_I_4 {
             case 1 -> dot = levelRandom();
             case 2 -> dot = levelMedium(userDot);
             case 3 -> dot = levelMediumPlus();
-            case 4 -> dot = levelHard();
         }
         board[dot[0]][dot[1]] = aiDot;
         System.out.printf("Ход %d. Компьютер выбрал точку: %d, %d%n\n", turnCounter, dot[0] + 1, dot[1] + 1);
