@@ -49,6 +49,7 @@ public class HW_I_4 {
     static boolean first = true;
 
     public static void gameStart(boolean setP) {
+        turnCounter = 1;
         if (first) {
             System.out.println("""
         \n\t\t\t\tПриветствую в игре "Крестики-нолики"
@@ -109,9 +110,9 @@ public class HW_I_4 {
                 |\t\t\tЗначения по умолчанию:
                 |
                 |\t-- Уровень сложности 3 - Medium+ (доступно еще три уровня: 1 - easy, 2 - medium и 4 - hard),
-                |\t      Если выбрать ур. 4 (МиниМакс), то количество точек для выигрыша определит компьютер.
-                |\t      Также возможно будет установить только квадратное поле.
-                |\t      Это сделано для упрощения "жизни" алгоритму и ускорения хода компьютера.
+                |\t      Если выбрать ур. 4 (МиниМакс), то вы попадете в спец. режим непобедимого МиниМакса :)
+                |\t      Поле 3x3, количество точек для выигрыша - 3.Это сделано для упрощения "жизни" алгоритму
+                |\t      и ускорения хода компьютера. В противном случае ход компьютера придется ждать очень долго.
                 |\t-- Поле 14x15 (Возможно установить поле любого размера, но рекомендуется не доходить до 100),
                 |\t-- 4 точки для выигрыша (Возможно установить длину не меньше 3 и не больше длины/ширины поля),
                 |\t-- Вы играете "X" (в случае выбора "O" компьютер ходит первым как "X").
@@ -127,23 +128,19 @@ public class HW_I_4 {
             }
             System.out.println();
             if (difLevel == 4) {
-                if (getChoice("Введите длину стороны квадратного игрового поля (минимум 3): ", 2) == -1) {
-                    return true;
-                }
+                sizeX = sizeY = dotToWin = 3;
+                System.out.println("Размер поля: 3x3");
+                System.out.printf("Количество точек для выигрыша: %d\n", dotToWin);
+                System.out.println();
             } else {
                 if (getChoice("Введите ширину и высоту игрового поля через пробел (минимум 3x3): ", 2) == -1) {
                     return true;
                 }
-            }
-            System.out.println();
-            if (difLevel == 4) {
-                dotToWin = Math.min(sizeX, sizeY);
-                System.out.printf("Количество точек для выигрыша: %d\n", dotToWin);
-            } else {
+                System.out.println();
                 if (getChoice("Введите количество точек для выигрыша (не меньше 3 и не больше ширины/длины поля): ",
                         3) == -1) return true;
+                System.out.println();
             }
-            System.out.println();
             if (getChoice("Выберите \"X\" или \"O\" (\"X\" ходит первым) (0 - \"O\", 1 - \"X\"): ", 4) == -1) {
                 return true;
             }
@@ -169,7 +166,8 @@ public class HW_I_4 {
      * маркер игрока (X/O).
      * Отдельно стоят case -1 и case 0:
      *     Case -1 - выбор между значениями переменных в игре по умолчанию и возможностью присвоить им свои значения
-     *     Case 0 - это предложение сыграть заново после завершения игры.
+     *     Case 0 - это набор предложений с однозначным ответом да/нет:задать параметры игры, сохранить параметры при
+     *     повторной игре, сыграть заново после завершения игры
      * @param text текст вопроса
      * @param marker цифровое значение вопроса, от которого зависит конкретный case
      * @return значения необходимых для игры переменных.
@@ -198,25 +196,18 @@ public class HW_I_4 {
                     }
                     // Ввод размеров игрового поля
                     case 2 -> {
-                        if (difLevel == 4) {
-                            sizeX = sizeY = sc.nextInt();
-                            if (sizeX == -1) return sizeX;
-                            if (sizeX >= 3) active = false;
-                            sc.nextLine();
-                        } else {
-                            sizeY = sc.nextInt();
-                            if (sizeY == -1) return sizeY;
-                            sizeX = sc.nextInt();
-                            if (sizeX == -1) return sizeX;
-                            if (sizeX >= 3 && sizeY >= 3) active = false;
-                            sc.nextLine();
-                        }
+                        sizeY = sc.nextInt();
+                        if (sizeY == -1) return sizeY;
+                        sizeX = sc.nextInt();
+                        if (sizeX == -1) return sizeX;
+                        if (sizeX >= 3 && sizeY >= 3) active = false;
+                        sc.nextLine();
                     }
                     // Ввод количества точек для выигрыша
                     case 3 -> {
                         dotToWin = sc.nextInt();
                         if (dotToWin == -1) return dotToWin;
-                        if (dotToWin >= 3 && dotToWin <= sizeY && dotToWin <= sizeX) active = false;
+                        if (dotToWin >= 3 && dotToWin <= sizeY || dotToWin <= sizeX) active = false;
                         sc.nextLine();
                     }
                     // Выбор игроком X или O
@@ -574,8 +565,7 @@ public class HW_I_4 {
     }
 
     /**
-     * Все-таки написал МиниМакс по приколу :) Глубина ограничена 3! Иначе даже на размере 4x4 с альфа/бета
-     * отсечением ходы компьютера будут ужасно долгими.
+     * Все-таки написал МиниМакс по приколу :) Правда, ограничил область его применения размером поля 3x3
      * @return массив с координатами хода компьютера
      */
     public static int[] levelHard() {
@@ -585,7 +575,7 @@ public class HW_I_4 {
             for (int j = 0; j < sizeX; j++) {
                 if (board[i][j] == emptyDot) {
                     board[i][j] = aiDot;
-                    int level = miniMax(i, j, board, 0, Integer.MIN_VALUE, Integer.MAX_VALUE, 5);
+                    int level = miniMax(i, j, board, 0, Integer.MIN_VALUE, Integer.MAX_VALUE);
                     board[i][j] = emptyDot;
                     if (level > bestScore) {
                         bestScore = level;
@@ -600,29 +590,26 @@ public class HW_I_4 {
 
     /**
      * Проверяем и оцениваем ситуацию в (почти) всех возможных ситуациях на доске. Ограничен альфа/бета отсечением -
-     * если оценка одной ветви выше/ниже другой, то в зависимости от очереди хода не проверяем другие, т. к. их оценка
-     * уже не важна. Глубина хода ограничивает ветвление.
+     * если оценка одной ветви выше/ниже другой, то не проверяем подветви, т. к. их оценка уже не важна.
      * @param row координата x
      * @param col координата y
      * @param board текущее состояние доски
      * @param turn очередь хода: 1 - человек, 0 - компьютер
      * @param alpha отсечение ненужных ветвей. Значительно сокращаем время проверки
      * @param beta см. в alpha
-     * @param depth глубина прохода
      * @return оценку состояния игры в зависимости от очереди хода
      */
-    public static int miniMax(int row, int col, char[][] board, int turn, int alpha, int beta, int depth) {
+    public static int miniMax(int row, int col, char[][] board, int turn, int alpha, int beta) {
         if (makeWinStar(row, col, 1, dotToWin, len)) return -10;
         if (makeWinStar(row, col, 0, dotToWin, len)) return 10;
         if (checkFullBoard()) return 0;
-        if (depth == 0) return 0;
         if (turn == 1) {
             int max = Integer.MIN_VALUE;
             for (int i = 0; i < sizeY; i++) {
                 for (int j = 0; j < sizeX; j++) {
                     if (board[i][j] == emptyDot) {
                         board[i][j] = aiDot;
-                        max = Math.max(max, miniMax(i, j, board, 0, alpha, beta, depth - 1));
+                        max = Math.max(max, miniMax(i, j, board, 0, alpha, beta));
                         board[i][j] = emptyDot;
                         alpha = Math.max(max, alpha);
                         if (alpha >= beta) {
@@ -638,7 +625,7 @@ public class HW_I_4 {
                 for (int j = 0; j < sizeX; j++) {
                     if (board[i][j] == emptyDot) {
                         board[i][j] = userDot;
-                        min = Math.min(min, miniMax(i, j, board, 1, alpha, beta, depth - 1));
+                        min = Math.min(min, miniMax(i, j, board, 1, alpha, beta));
                         board[i][j] = emptyDot;
                         beta = Math.min(min, beta);
                         if (beta <= alpha) {
