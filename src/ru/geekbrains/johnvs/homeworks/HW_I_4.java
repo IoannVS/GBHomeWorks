@@ -475,7 +475,7 @@ public class HW_I_4 {
     }
 
     /**
-     * Метод проверки наличия выигрышного хода (с глубиной 2) для компьютера. Ироку теперь нужно думать не только о
+     * Метод проверки наличия выигрышного хода (с глубиной 2) для компьютера. Игроку теперь нужно думать не только о
      * своих точках и попытках обойти блок компьютера. Если компьютер увидит возможность выиграть в течение двух
      * ходов, он обязательно воспользуется ею, не забыв заблокировать игроку выигрышный ход
      * В приоритете компьютера выигрыш, так что сначала будет проверка на его наличие, а уже потом блок ходов игрока.
@@ -583,14 +583,14 @@ public class HW_I_4 {
         int bestScore = Integer.MIN_VALUE;
         for (int i = 0; i < sizeY; i++) {
             for (int j = 0; j < sizeX; j++) {
-                if (board[j][i] == emptyDot) {
-                    board[j][i] = aiDot;
-                    int level = miniMax(j, i, board, 0, Integer.MIN_VALUE, Integer.MAX_VALUE, 5);
-                    board[j][i] = emptyDot;
+                if (board[i][j] == emptyDot) {
+                    board[i][j] = aiDot;
+                    int level = miniMax(i, j, board, 0, Integer.MIN_VALUE, Integer.MAX_VALUE, 5);
+                    board[i][j] = emptyDot;
                     if (level > bestScore) {
                         bestScore = level;
-                        dot[0] = j;
-                        dot[1] = i;
+                        dot[1] = j;
+                        dot[0] = i;
                     }
                 }
             }
@@ -618,12 +618,12 @@ public class HW_I_4 {
         if (depth == 0) return 0;
         if (turn == 1) {
             int max = Integer.MIN_VALUE;
-            for (int i = 0; i < sizeX; i++) {
-                for (int j = 0; j < sizeY; j++) {
-                    if (board[j][i] == emptyDot) {
-                        board[j][i] = aiDot;
-                        max = Math.max(max, miniMax(j, i, board, 0, alpha, beta, depth - 1));
-                        board[j][i] = emptyDot;
+            for (int i = 0; i < sizeY; i++) {
+                for (int j = 0; j < sizeX; j++) {
+                    if (board[i][j] == emptyDot) {
+                        board[i][j] = aiDot;
+                        max = Math.max(max, miniMax(i, j, board, 0, alpha, beta, depth - 1));
+                        board[i][j] = emptyDot;
                         alpha = Math.max(max, alpha);
                         if (alpha >= beta) {
                             return max;
@@ -634,12 +634,12 @@ public class HW_I_4 {
             return max;
         } else {
             int min = Integer.MAX_VALUE;
-            for (int i = 0; i < sizeX; i++) {
-                for (int j = 0; j < sizeY; j++) {
-                    if (board[j][i] == emptyDot) {
-                        board[j][i] = userDot;
-                        min = Math.min(min, miniMax(j, i, board, 1, alpha, beta, depth - 1));
-                        board[j][i] = emptyDot;
+            for (int i = 0; i < sizeY; i++) {
+                for (int j = 0; j < sizeX; j++) {
+                    if (board[i][j] == emptyDot) {
+                        board[i][j] = userDot;
+                        min = Math.min(min, miniMax(i, j, board, 1, alpha, beta, depth - 1));
+                        board[i][j] = emptyDot;
                         beta = Math.min(min, beta);
                         if (beta <= alpha) {
                             return min;
