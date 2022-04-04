@@ -12,7 +12,7 @@ public class HW_I_4 {
     при этом заблокировав одно направление, он может не успеть заблокировать несколько других.
     -- Возможный диапазон установки значений переменных:
         - размер поля: минимум 3x3, максимум - не ограничен, но рекомендуется меньше 100,
-        - кол-во точек для выыгрыша: минимум 3, максимум - не больше ширины/длины игрового поля,
+        - кол-во точек для выигрыша: минимум 3, максимум - не больше ширины/длины игрового поля,
         - в случае выбора игроком "O", компьютер будет ходить первым, т. к. "X" всегда ходит первым,
         - уровни сложности игры:
             1. Рандом - генерируем рандомные значения, проверяем клетку на занятость. Если пустая - ставим символ,
@@ -27,7 +27,7 @@ public class HW_I_4 {
     static Scanner sc = new Scanner(System.in);
 
     public static void main(String[] args) {
-        gameStart();
+        gameStart(true);
     }
 
     static final char emptyDot = '•';
@@ -45,18 +45,25 @@ public class HW_I_4 {
     //Комбинации выигрышных линий. Подробнее см. в описании функции getCombsWin
     static String[] combsWin = new String[4];
 
-    public static void gameStart() {
-        System.out.println("""
+    //При первом запуске игры выводим заголовок
+    static boolean first = true;
+
+    public static void gameStart(boolean setP) {
+        if (first) {
+            System.out.println("""
         \n\t\t\t\tПриветствую в игре "Крестики-нолики"
         
         Внимание! Координатная сетка инвертирована: X - вертикаль, Y - горизонталь");
         Сначала вводится координата X, затем через пробел координата Y. Удачи :)
         
-        \t-- Введите -1 в любом поле ввода, чтобы завершить игру --
-        """);
-        if(setGameParameters()) {
-            System.out.println("\nЗавершаем процессы...");
-            return;
+        \t-- Введите -1 в любом поле ввода, чтобы завершить игру --""");
+            first = false;
+        }
+        if (setP) {
+            if (setGameParameters()) {
+                System.out.println("\nЗавершаем процессы...");
+                return;
+            }
         }
         makeBoard();
         System.out.printf("\nПоле для игры размером %dx%d\nX - вертикаль, Y - горизонталь!\n\n", sizeX, sizeY);
@@ -64,8 +71,7 @@ public class HW_I_4 {
         System.out.println("""
         Игра начинается! "X" ходит первым!
                 
-        Введите -1 при вводе координат, если желаете завершить игру
-        """);
+        Введите -1 при вводе координат, если желаете завершить игру""");
         boolean gameOn;
         while (true) {
             //Если user выбрал "O", то первым ходит компьютер
@@ -80,7 +86,16 @@ public class HW_I_4 {
                 if (!gameOn) break;
             }
         }
-        getChoice("Сыграем еще раз? (1 - да, 0 - нет) ", 0);
+        int choice = getChoice("Сыграем еще раз? (1 - да, 0 - нет) ", 0);
+        if (choice == -1 || choice == 0) {
+            System.out.println("Завершаем процессы");
+        } else {
+            System.out.println();
+            choice = getChoice("Сохраняем прежние параметры? (1 - да, 0 - выберем новые) ", 0);
+            if (choice == 1) gameStart(false);
+            else if (choice == 0) gameStart(true);
+            else System.out.println("Завершаем процессы...");
+        }
     }
 
     /**
@@ -90,26 +105,42 @@ public class HW_I_4 {
      */
     public static boolean setGameParameters() {
         System.out.println("""
+                
                 |\t\t\tЗначения по умолчанию:
                 |
+                |\t-- Уровень сложности 3 - Medium+ (доступно еще три уровня: 1 - easy, 2 - medium и 4 - hard),
+                |\t      Если выбрать ур. 4 (МиниМакс), то количество точек для выигрыша определит компьютер.
+                |\t      Также возможно будет установить только квадратное поле.
+                |\t      Это сделано для упрощения "жизни" алгоритму и ускорения хода компьютера.
                 |\t-- Поле 14x15 (Возможно установить поле любого размера, но рекомендуется не доходить до 100),
                 |\t-- 4 точки для выигрыша (Возможно установить длину не меньше 3 и не больше длины/ширины поля),
-                |\t-- Уровень сложности 2 - блок (доступно еще два уровня: 1 - рандом и 3 - выигрыш),
                 |\t-- Вы играете "X" (в случае выбора "O" компьютер ходит первым как "X").
                 """);
-        int choice = getChoice("Корректируем параметры игры? (1 - да, 0 - нет): ", -1);
+        int choice = getChoice("Корректируем параметры игры? (1 - да, 0 - нет): ", 0);
         if (choice == -1) return true;
         if (choice == 1) {
             System.out.println();
-            if (getChoice("Введите ширину и высоту игрового поля через пробел (минимум 3x3): ", 1) == -1) {
+            if (getChoice("Выберите уровень сложности (1 - easy, 2 - medium, 3 - medium+, 4 - hard): ", 1) == -1) {
                 return true;
             }
             System.out.println();
-            if (getChoice("Введите количество точек для выигрыша (не меньше 3 и не больше ширины/длины поля): ",
-                    2) == -1) return true;
+            if (difLevel == 4) {
+                if (getChoice("Введите длину стороны квадратного игрового поля (минимум 3): ", 2) == -1) {
+                    return true;
+                }
+            } else {
+                if (getChoice("Введите ширину и высоту игрового поля через пробел (минимум 3x3): ", 2) == -1) {
+                    return true;
+                }
+            }
             System.out.println();
-            if (getChoice("Выберите уровень сложности (1 - рандом, 2 - блок, 3 - выигрыш): ", 3) == -1) {
-                return true;
+            // Если выбран МиниМакс (ур. 4), то мы "упрощаем ему жизнь", чтобы не ждать ход компьютера 10-15 минут
+            if (difLevel == 4) {
+                dotToWin = Math.min(sizeX, sizeY);
+                System.out.printf("Количество точек для выигрыша: %d\n", dotToWin);
+            } else {
+                if (getChoice("Введите количество точек для выигрыша (не меньше 3 и не больше ширины/длины поля): ",
+                        3) == -1) return true;
             }
             System.out.println();
             if (getChoice("Выберите \"X\" или \"O\" (\"X\" ходит первым) (0 - \"O\", 1 - \"X\"): ", 4) == -1) {
@@ -120,11 +151,11 @@ public class HW_I_4 {
             sizeX = 14;
             sizeY = 15;
             dotToWin = 4;
-            difLevel = 2;
+            difLevel = 3;
             userDot = 'X';
             aiDot = 'O';
         }
-        if (difLevel != 1) makeMediumVariables();
+        if (difLevel != 1 && difLevel != 4) makeMediumVariables();
         turnCounter = 1;
         len = dotToWin * 2 - 1;
         getCombsWin();
@@ -150,41 +181,41 @@ public class HW_I_4 {
             if (sc.hasNextInt()) {
                 switch (marker) {
                     // Предложение изменить параметры игры
-                    case -1 -> {
+                    // Запрос повторной игры
+                    // При повторной игре выбор между сохранением параметров и назначением новых
+                    case 0 -> {
                         int choice = sc.nextInt();
                         if (choice == -1 || choice == 0 || choice == 1) return choice;
                         sc.nextLine();
                     }
-                    // Запрос повторной игры
-                    case 0 -> {
-                        int choice = sc.nextInt();
-                        if (choice == -1) return choice;
-                        if (choice == 0 || choice == 1) active = false;
-                        if (choice == 1) gameStart();
-                        else System.out.println("Завершаем процессы...");
+                    // Выбор сложности игры
+                    case 1 -> {
+                        difLevel = sc.nextInt();
+                        if (difLevel == -1) return difLevel;
+                        if (difLevel == 1 || difLevel == 2 || difLevel == 3 || difLevel == 4) active = false;
                         sc.nextLine();
                     }
                     // Ввод размеров игрового поля
-                    case 1 -> {
-                        sizeY = sc.nextInt();
-                        if (sizeY == -1) return sizeY;
-                        sizeX = sc.nextInt();
-                        if (sizeX == -1) return sizeX;
-                        if (sizeX >= 3 && sizeY >= 3) active = false;
-                        sc.nextLine();
+                    case 2 -> {
+                        if (difLevel == 4) {
+                            sizeX = sizeY = sc.nextInt();
+                            if (sizeX == -1) return sizeX;
+                            if (sizeX >= 3) active = false;
+                            sc.nextLine();
+                        } else {
+                            sizeY = sc.nextInt();
+                            if (sizeY == -1) return sizeY;
+                            sizeX = sc.nextInt();
+                            if (sizeX == -1) return sizeX;
+                            if (sizeX >= 3 && sizeY >= 3) active = false;
+                            sc.nextLine();
+                        }
                     }
                     // Ввод количества точек для выигрыша
-                    case 2 -> {
+                    case 3 -> {
                         dotToWin = sc.nextInt();
                         if (dotToWin == -1) return dotToWin;
                         if (dotToWin >= 3 && dotToWin <= sizeY && dotToWin <= sizeX) active = false;
-                        sc.nextLine();
-                    }
-                    // Выбор сложности игры
-                    case 3 -> {
-                        difLevel = sc.nextInt();
-                        if (difLevel == -1) return difLevel;
-                        if (difLevel == 1 || difLevel == 2 || difLevel == 3) active = false;
                         sc.nextLine();
                     }
                     // Выбор игроком X или O
@@ -406,6 +437,7 @@ public class HW_I_4 {
             case 1 -> dot = levelRandom();
             case 2 -> dot = levelMedium(userDot);
             case 3 -> dot = levelMediumPlus();
+            case 4 -> dot = levelHard();
         }
         board[dot[0]][dot[1]] = aiDot;
         System.out.printf("Ход %d. Компьютер выбрал точку: %d, %d%n\n", turnCounter, dot[0] + 1, dot[1] + 1);
@@ -542,5 +574,83 @@ public class HW_I_4 {
             }
         }
         return emptyCounter == cellCounter;
+    }
+
+    /**
+     * Все-таки написал МиниМакс по приколу :) Глубина ограничена 3! Иначе даже на размере 4x4 с альфа/бета
+     * отсечением ходы компьютера будут ужасно долгими.
+     * @return массив с координатами хода компьютера
+     */
+    public static int[] levelHard() {
+        int[] dot = new int[2];
+        int bestScore = Integer.MIN_VALUE;
+        for (int i = 0; i < sizeY; i++) {
+            for (int j = 0; j < sizeX; j++) {
+                if (board[j][i] == emptyDot) {
+                    board[j][i] = aiDot;
+                    int level = miniMax(j, i, board, 0, Integer.MIN_VALUE, Integer.MAX_VALUE, 5);
+                    board[j][i] = emptyDot;
+                    if (level > bestScore) {
+                        bestScore = level;
+                        dot[0] = j;
+                        dot[1] = i;
+                    }
+                }
+            }
+        }
+        return dot;
+    }
+
+    /**
+     * Проверяем и оцениваем ситуацию в (почти) всех возможных ситуациях на доске. Ограничен альфа/бета отсечением -
+     * если оценка одной ветви выше/ниже другой, то в зависимости от очереди хода не проверяем другие, т. к. их оценка
+     * уже не важна. Глубина хода ограничивает ветвление.
+     * @param row координата x
+     * @param col координата y
+     * @param board текущее состояние доски
+     * @param turn очередь хода: 1 - человек, 0 - компьютер
+     * @param alpha отсечение ненужных ветвей. Значительно сокращаем время проверки
+     * @param beta см. в alpha
+     * @param depth глубина прохода
+     * @return оценку состояния игры в зависимости от очереди хода
+     */
+    public static int miniMax(int row, int col, char[][] board, int turn, int alpha, int beta, int depth) {
+        if (makeWinStar(row, col, 1, dotToWin, len)) return -10;
+        if (makeWinStar(row, col, 0, dotToWin, len)) return 10;
+        if (checkFullBoard()) return 0;
+        if (depth == 0) return 0;
+        if (turn == 1) {
+            int max = Integer.MIN_VALUE;
+            for (int i = 0; i < sizeX; i++) {
+                for (int j = 0; j < sizeY; j++) {
+                    if (board[j][i] == emptyDot) {
+                        board[j][i] = aiDot;
+                        max = Math.max(max, miniMax(j, i, board, 0, alpha, beta, depth - 1));
+                        board[j][i] = emptyDot;
+                        alpha = Math.max(max, alpha);
+                        if (alpha >= beta) {
+                            return max;
+                        }
+                    }
+                }
+            }
+            return max;
+        } else {
+            int min = Integer.MAX_VALUE;
+            for (int i = 0; i < sizeX; i++) {
+                for (int j = 0; j < sizeY; j++) {
+                    if (board[j][i] == emptyDot) {
+                        board[j][i] = userDot;
+                        min = Math.min(min, miniMax(j, i, board, 1, alpha, beta, depth - 1));
+                        board[j][i] = emptyDot;
+                        beta = Math.min(min, beta);
+                        if (beta <= alpha) {
+                            return min;
+                        }
+                    }
+                }
+            }
+            return min;
+        }
     }
 }

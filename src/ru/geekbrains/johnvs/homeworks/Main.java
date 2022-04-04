@@ -58,7 +58,7 @@ public class Main {
                     }
                     case 4 -> {
                         System.out.println(startLine);
-                        HW_I_4.gameStart();
+                        HW_I_4.gameStart(true);
                         System.out.println(endLine);
                         other();
                         active = false;
