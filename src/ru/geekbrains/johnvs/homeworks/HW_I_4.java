@@ -120,6 +120,8 @@ public class HW_I_4 {
         if (choice == -1) return true;
         if (choice == 1) {
             System.out.println();
+            // Если выбран МиниМакс (ур. 4), то мы "упрощаем ему жизнь" при выборе дальнейших настроек,
+            // чтобы не ждать ход компьютера 10-15 минут
             if (getChoice("Выберите уровень сложности (1 - easy, 2 - medium, 3 - medium+, 4 - hard): ", 1) == -1) {
                 return true;
             }
@@ -134,7 +136,6 @@ public class HW_I_4 {
                 }
             }
             System.out.println();
-            // Если выбран МиниМакс (ур. 4), то мы "упрощаем ему жизнь", чтобы не ждать ход компьютера 10-15 минут
             if (difLevel == 4) {
                 dotToWin = Math.min(sizeX, sizeY);
                 System.out.printf("Количество точек для выигрыша: %d\n", dotToWin);
