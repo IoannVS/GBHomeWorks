@@ -129,7 +129,8 @@ public class HW_I_4 {
             }
             System.out.println();
             if (difLevel == 4) {
-                sizeX = sizeY = dotToWin = 3;
+                sizeX = sizeY = 3;
+                dotToWin = 3;
                 System.out.println("""
                         Размер поля: 3x3
                         
@@ -508,6 +509,7 @@ public class HW_I_4 {
                     if (makeWinStar(i, j, turn, line, len)) {
                         dot[0] = i;
                         dot[1] = j;
+                        board[i][j] = emptyDot;
                         return dot;
                     }
                     board[i][j] = emptyDot;
@@ -529,7 +531,7 @@ public class HW_I_4 {
         int[] randArr = {-1, 1}, randInt = new int[2], dot = {sizeX * 2, sizeY * 2};
         for (int i = 0; i < sizeX; i++) {
             for (int j = 0; j < sizeY; j++) {
-                if (board[i][j] == dotTurn && checkSquare(i, j)) {
+                if (board[i][j] == dotTurn && checkSquare(i, j, 3)) {
                     do {
                         randInt[0] = (int) (Math.random() * 2);
                         randInt[1] = (int) (Math.random() * 2);
@@ -545,17 +547,17 @@ public class HW_I_4 {
 
     /**
      * Определяем "одинокость" точки для метода blockAloneDot.
-     * Проверяем квадрат 3x3 вокруг точки, исключая ее саму.
+     * Проверяем квадрат со стороной size вокруг точки, исключая ее саму.
      * @param x проверяемая координата хода
      * @param y проверяемая координата хода
      * @return true, если точка "одинока", false, если возле нее уже что-либо есть
      * (если уже есть userDot, то это будет точкой отсчета для blockWinLine, а если есть userDot,
      * то опять же это область работы для blockWinLine, т. к. это алгоритм для "одиноких" точек)
      */
-    public static boolean checkSquare(int x, int y) {
+    public static boolean checkSquare(int x, int y, int size) {
         int emptyCounter = 0, cellCounter = 0;
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
                 if (isValid(y - 1 + i, x - 1 + j) && (x - 1 + i != x || y - 1 + j != y)) {
                     cellCounter++;
                     if (isEmpty(y - 1 + i, x - 1 + j)) {
