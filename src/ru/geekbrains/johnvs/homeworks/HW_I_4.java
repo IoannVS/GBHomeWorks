@@ -72,7 +72,8 @@ public class HW_I_4 {
         System.out.println("""
         Игра начинается! "X" ходит первым!
                 
-        Введите -1 при вводе координат, если желаете завершить игру""");
+        Введите -1 при вводе координат, если желаете завершить игру
+        """);
         boolean gameOn;
         while (true) {
             //Если user выбрал "O", то первым ходит компьютер
@@ -129,9 +130,11 @@ public class HW_I_4 {
             System.out.println();
             if (difLevel == 4) {
                 sizeX = sizeY = dotToWin = 3;
-                System.out.println("Размер поля: 3x3");
-                System.out.printf("Количество точек для выигрыша: %d\n", dotToWin);
-                System.out.println();
+                System.out.println("""
+                        Размер поля: 3x3
+                        
+                        Количество точек для выигрыша: 3
+                        """);
             } else {
                 if (getChoice("Введите ширину и высоту игрового поля через пробел (минимум 3x3): ", 2) == -1) {
                     return true;
