@@ -129,7 +129,8 @@ public class HW_I_4 {
             }
             System.out.println();
             if (difLevel == 4) {
-                sizeX = sizeY = 3;
+                sizeX = 3;
+                sizeY = 3;
                 dotToWin = 3;
                 System.out.println("""
                         Размер поля: 3x3
@@ -576,11 +577,11 @@ public class HW_I_4 {
     public static int[] levelHard() {
         int[] dot = new int[2];
         int bestScore = Integer.MIN_VALUE;
-        for (int i = 0; i < sizeY; i++) {
-            for (int j = 0; j < sizeX; j++) {
+        for (int i = 0; i < sizeX; i++) {
+            for (int j = 0; j < sizeY; j++) {
                 if (board[i][j] == emptyDot) {
                     board[i][j] = aiDot;
-                    int level = miniMax(i, j, board, 0, Integer.MIN_VALUE, Integer.MAX_VALUE);
+                    int level = miniMax(i, j, board, 0, Integer.MIN_VALUE, Integer.MAX_VALUE, 5);
                     board[i][j] = emptyDot;
                     if (level > bestScore) {
                         bestScore = level;
@@ -604,17 +605,17 @@ public class HW_I_4 {
      * @param beta см. в alpha
      * @return оценку состояния игры в зависимости от очереди хода
      */
-    public static int miniMax(int row, int col, char[][] board, int turn, int alpha, int beta) {
+    public static int miniMax(int row, int col, char[][] board, int turn, int alpha, int beta, int depth) {
         if (makeWinStar(row, col, 1, dotToWin, len)) return -10;
         if (makeWinStar(row, col, 0, dotToWin, len)) return 10;
-        if (checkFullBoard()) return 0;
+        if (checkFullBoard() || depth == 0) return 0;
         if (turn == 1) {
             int max = Integer.MIN_VALUE;
-            for (int i = 0; i < sizeY; i++) {
-                for (int j = 0; j < sizeX; j++) {
+            for (int i = 0; i < sizeX; i++) {
+                for (int j = 0; j < sizeY; j++) {
                     if (board[i][j] == emptyDot) {
                         board[i][j] = aiDot;
-                        max = Math.max(max, miniMax(i, j, board, 0, alpha, beta));
+                        max = Math.max(max, miniMax(i, j, board, 0, alpha, beta, depth - 1));
                         board[i][j] = emptyDot;
                         alpha = Math.max(max, alpha);
                         if (alpha >= beta) {
@@ -626,11 +627,11 @@ public class HW_I_4 {
             return max;
         } else {
             int min = Integer.MAX_VALUE;
-            for (int i = 0; i < sizeY; i++) {
-                for (int j = 0; j < sizeX; j++) {
+            for (int i = 0; i < sizeX; i++) {
+                for (int j = 0; j < sizeY; j++) {
                     if (board[i][j] == emptyDot) {
                         board[i][j] = userDot;
-                        min = Math.min(min, miniMax(i, j, board, 1, alpha, beta));
+                        min = Math.min(min, miniMax(i, j, board, 1, alpha, beta, depth - 1));
                         board[i][j] = emptyDot;
                         beta = Math.min(min, beta);
                         if (beta <= alpha) {
