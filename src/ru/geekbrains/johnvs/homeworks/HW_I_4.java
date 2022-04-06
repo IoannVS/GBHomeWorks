@@ -523,8 +523,8 @@ public class HW_I_4 {
     }
 
     /**
-     * Если начать игру не с края поля (особенно при dotToWin == 3), то игрок выиграет за несколько ходов,
-     * т. к. от точки можно развить линию в любую сторону и заблокировать ее не удастся.
+     * Если начать игру не с края поля (особенно при dotToWin == 3 и размере поля от 3x3), то игрок выиграет за
+     * несколько ходов, т. к. от точки можно развить линию в любую сторону и заблокировать ее не удастся.
      * Текущий метод частично (с одной рандомно выбранной стороны) блокирует "одинокую" точку,
      * чтобы в случае развития ее игроком заблокировать потенциально выигрышную линию методом blockWinLine
      * @return в случае обнаружения такой точки возвращаем координаты блокирующей точки, иначе - координаты
@@ -583,7 +583,7 @@ public class HW_I_4 {
             for (int j = 0; j < sizeY; j++) {
                 if (board[i][j] == emptyDot) {
                     board[i][j] = aiDot;
-                    int level = miniMax(i, j, board, 0, Integer.MIN_VALUE, Integer.MAX_VALUE, 5);
+                    int level = miniMax(i, j, board, 0, Integer.MIN_VALUE, Integer.MAX_VALUE);
                     board[i][j] = emptyDot;
                     if (level > bestScore) {
                         bestScore = level;
@@ -607,17 +607,17 @@ public class HW_I_4 {
      * @param beta см. в alpha
      * @return оценку состояния игры в зависимости от очереди хода
      */
-    public static int miniMax(int row, int col, char[][] board, int turn, int alpha, int beta, int depth) {
+    public static int miniMax(int row, int col, char[][] board, int turn, int alpha, int beta) {
         if (makeWinStar(row, col, 1, dotToWin, len)) return -10;
         if (makeWinStar(row, col, 0, dotToWin, len)) return 10;
-        if (checkFullBoard() || depth == 0) return 0;
+        if (checkFullBoard()) return 0;
         if (turn == 1) {
             int max = Integer.MIN_VALUE;
             for (int i = 0; i < sizeX; i++) {
                 for (int j = 0; j < sizeY; j++) {
                     if (board[i][j] == emptyDot) {
                         board[i][j] = aiDot;
-                        max = Math.max(max, miniMax(i, j, board, 0, alpha, beta, depth - 1));
+                        max = Math.max(max, miniMax(i, j, board, 0, alpha, beta));
                         board[i][j] = emptyDot;
                         alpha = Math.max(max, alpha);
                         if (alpha >= beta) {
@@ -633,7 +633,7 @@ public class HW_I_4 {
                 for (int j = 0; j < sizeY; j++) {
                     if (board[i][j] == emptyDot) {
                         board[i][j] = userDot;
-                        min = Math.min(min, miniMax(i, j, board, 1, alpha, beta, depth - 1));
+                        min = Math.min(min, miniMax(i, j, board, 1, alpha, beta));
                         board[i][j] = emptyDot;
                         beta = Math.min(min, beta);
                         if (beta <= alpha) {
