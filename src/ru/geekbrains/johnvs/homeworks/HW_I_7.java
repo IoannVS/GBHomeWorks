@@ -39,6 +39,7 @@ public class HW_I_7 {
 
         // Кормежка 1
         System.out.println("Кормежка № 1:\n");
+
         food.printInfo();
         System.out.println();
 
@@ -52,6 +53,7 @@ public class HW_I_7 {
 
         // Кормежка 2
         System.out.println("Кормежка № 2:\n");
+
         food.addFood(100);
         food.printInfo();
         System.out.println();
