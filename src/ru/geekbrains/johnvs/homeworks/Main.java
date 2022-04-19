@@ -5,7 +5,7 @@ import java.util.Scanner;
 public class Main {
 
     static Scanner sc = new Scanner(System.in);
-    static int counterHomeWorks = 7;
+    static int counterHomeWorks = 8;
 
     public static void main(String[] args) {
 
@@ -80,6 +80,13 @@ public class Main {
                     case 7 -> {
                         System.out.println(startLine);
                         HW_I_7.show();
+                        System.out.println(endLine);
+                        other();
+                        active = false;
+                    }
+                    case 8 -> {
+                        System.out.println(startLine);
+                        HW_I_8.show();
                         System.out.println(endLine);
                         other();
                         active = false;
