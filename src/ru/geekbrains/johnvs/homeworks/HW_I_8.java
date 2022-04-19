@@ -43,7 +43,9 @@ public class HW_I_8 {
         obstacles[4] = new Treadmill();
         ((Treadmill) obstacles[4]).setDistance(275);
 
-        // Сам забег сделан через простой for для упрощения процесса
+        /* Сам забег сделан через for для упрощения процесса
+        Перед прохождением препятствия определяем тип участника и препятствия
+         */
         int counter = 0;
         boolean active = true;
         for (Object every: participants) {
@@ -104,6 +106,12 @@ class Robot{
         this.maxDistance = maxDistance;
     }
 
+    /**
+     * Метод позволяет пробежать беговую дорожку с заданной дистанцией. Выводит в консоль сообщение о результатах
+     * прохождения дистанции
+     * @param distance препятствие типа "беговая дорожка"
+     * @return true если дистанция пройдена успешно, false - в случае неудачи
+     */
     public boolean run(Treadmill distance) {
         boolean success = distance.run(maxDistance);
         String text = success ? "Робот %s пробежал %d км.\n" :
@@ -112,6 +120,12 @@ class Robot{
         return success;
     }
 
+    /**
+     * Метод позволяет перепрыгнуть стену с заданной высотой. Выводит в консоль сообщение о результатах
+     * прохождения дистанции
+     * @param height препятствие типа "стена"
+     * @return true если прыжок удался, false - в случае неудачи
+     */
     public boolean jump(Wall height) {
         boolean success = height.jump(maxHeight);
         String text = success ? "Робот %s перепрыгнул препятствие высотой %d м.\n" :
@@ -119,12 +133,6 @@ class Robot{
         System.out.printf(text, name, height.getWallHeight());
         return success;
     }
-
-    public String getName() {return name;}
-
-    public double getMaxHeight() {return maxHeight;}
-
-    public int getMaxDistance() {return maxDistance;}
 }
 
 class Human {
@@ -147,6 +155,12 @@ class Human {
         this.maxDistance = maxDistance;
     }
 
+    /**
+     * Метод позволяет пробежать беговую дорожку с заданной дистанцией. Выводит в консоль сообщение о результатах
+     * прохождения дистанции
+     * @param distance препятствие типа "беговая дорожка"
+     * @return true если дистанция пройдена успешно, false - в случае неудачи
+     */
     public boolean run(Treadmill distance) {
         boolean success = distance.run(maxDistance);
         String text = success ? "%s пробежал %d км.\n" :
@@ -155,6 +169,12 @@ class Human {
         return success;
     }
 
+    /**
+     * Метод позволяет перепрыгнуть стену с заданной высотой. Выводит в консоль сообщение о результатах
+     * прохождения дистанции
+     * @param height препятствие типа "стена"
+     * @return true если прыжок удался, false - в случае неудачи
+     */
     public boolean jump(Wall height) {
         boolean success = height.jump(maxHeight);
         String text = success ? "%s перепрыгнул препятствие высотой %d м.\n" :
@@ -162,12 +182,6 @@ class Human {
         System.out.printf(text, name, height.getWallHeight());
         return success;
     }
-
-    public String getName() {return name;}
-
-    public double getMaxHeight() {return maxHeight;}
-
-    public int getMaxDistance() {return maxDistance;}
 }
 
 class FatCat {
@@ -190,6 +204,12 @@ class FatCat {
         this.maxDistance = maxDistance;
     }
 
+    /**
+     * Метод позволяет пробежать беговую дорожку с заданной дистанцией. Выводит в консоль сообщение о результатах
+     * прохождения дистанции
+     * @param distance препятствие типа "беговая дорожка"
+     * @return true если дистанция пройдена успешно, false - в случае неудачи
+     */
     public boolean run(Treadmill distance) {
         boolean success = distance.run(maxDistance);
         String text = success ? "Кот %s пробежал %d км.\n" :
@@ -198,6 +218,12 @@ class FatCat {
         return success;
     }
 
+    /**
+     * Метод позволяет перепрыгнуть стену с заданной высотой. Выводит в консоль сообщение о результатах
+     * прохождения дистанции
+     * @param height препятствие типа "стена"
+     * @return true если прыжок удался, false - в случае неудачи
+     */
     public boolean jump(Wall height) {
         boolean success = height.jump(maxHeight);
         String text = success ? "Кот %s перепрыгнул препятствие высотой %d м.\n" :
@@ -205,12 +231,6 @@ class FatCat {
         System.out.printf(text, name, height.getWallHeight());
         return success;
     }
-
-    public String getName() {return name;}
-
-    public double getMaxHeight() {return maxHeight;}
-
-    public int getMaxDistance() {return maxDistance;}
 }
 
 class Wall {
@@ -221,9 +241,12 @@ class Wall {
         wallHeight = 1;
     }
 
-    public boolean jump (int maxHeight) {
-        return maxHeight >= wallHeight;
-    }
+    /**
+     * Метод прыжка: сравниваем выосту стены и максимальную высоту прыжка существа, которое пробует перепрыгнуть стену
+     * @param maxHeight максимальная высота прыжка существа, которое пробует перепрыгнуть стену
+     * @return true если прыжок удался, false - в случае неудачи
+     */
+    public boolean jump (int maxHeight) {return maxHeight >= wallHeight;}
 
     public int getWallHeight() {return wallHeight;}
 
@@ -245,9 +268,13 @@ class Treadmill {
 
     public Treadmill () {}
 
-    public boolean run (int maxDistance) {
-        return maxDistance >= distance;
-    }
+    /**
+     * Метод прыжка: сравниваем длину заданной дистанции и максимальную длину беговой дистанции существа,
+     * которое пробует пробежать дорожку
+     * @param maxDistance максимальная длина беговой дистанции существа, которое пробует пробежать дорожку
+     * @return true если дистанция пройдена успешно, false - в случае неудачи
+     */
+    public boolean run (int maxDistance) {return maxDistance >= distance;}
 
     public int getDistance() {return distance;}
 
