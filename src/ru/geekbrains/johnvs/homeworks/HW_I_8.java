@@ -118,9 +118,8 @@ class Robot{
      */
     public boolean run(Treadmill distance) {
         boolean success = distance.run(maxDistance);
-        String text = success ? "Робот %s пробежал %d км.\n" :
-                "Робот %s не смог пробежать %d км.\n";
-        System.out.printf(text, name, distance.getDistance());
+        System.out.printf(success ? "Робот %s пробежал %d км.\n" :
+                "Робот %s не смог пробежать %d км.\n", name, distance.getDistance());
         return success;
     }
 
@@ -132,9 +131,8 @@ class Robot{
      */
     public boolean jump(Wall height) {
         boolean success = height.jump(maxHeight);
-        String text = success ? "Робот %s перепрыгнул препятствие высотой %d м.\n" :
-                "Робот %s не смог перепрыгнуть препятствие высотой %d м.\n";
-        System.out.printf(text, name, height.getWallHeight());
+        System.out.printf(success ? "Робот %s перепрыгнул препятствие высотой %d м.\n" :
+                "Робот %s не смог перепрыгнуть препятствие высотой %d м.\n", name, height.getWallHeight());
         return success;
     }
 }
@@ -167,9 +165,8 @@ class Human {
      */
     public boolean run(Treadmill distance) {
         boolean success = distance.run(maxDistance);
-        String text = success ? "%s пробежал %d км.\n" :
-                "%s не смог пробежать %d км.\n";
-        System.out.printf(text, name, distance.getDistance());
+        System.out.printf(success ? "%s пробежал %d км.\n" :
+                "%s не смог пробежать %d км.\n", name, distance.getDistance());
         return success;
     }
 
@@ -181,9 +178,8 @@ class Human {
      */
     public boolean jump(Wall height) {
         boolean success = height.jump(maxHeight);
-        String text = success ? "%s перепрыгнул препятствие высотой %d м.\n" :
-                "%s не смог перепрыгнуть препятствие высотой %d м.\n";
-        System.out.printf(text, name, height.getWallHeight());
+        System.out.printf(success ? "%s перепрыгнул препятствие высотой %d м.\n" :
+                "%s не смог перепрыгнуть препятствие высотой %d м.\n", name, height.getWallHeight());
         return success;
     }
 }
@@ -216,9 +212,8 @@ class FatCat {
      */
     public boolean run(Treadmill distance) {
         boolean success = distance.run(maxDistance);
-        String text = success ? "Кот %s пробежал %d км.\n" :
-                "Кот %s не смог пробежать %d км.\n";
-        System.out.printf(text, name, distance.getDistance());
+        System.out.printf(success ? "Кот %s пробежал %d км.\n" :
+                "Кот %s не смог пробежать %d км.\n", name, distance.getDistance());
         return success;
     }
 
@@ -230,9 +225,8 @@ class FatCat {
      */
     public boolean jump(Wall height) {
         boolean success = height.jump(maxHeight);
-        String text = success ? "Кот %s перепрыгнул препятствие высотой %d м.\n" :
-                "Кот %s не смог перепрыгнуть препятствие высотой %d м.\n";
-        System.out.printf(text, name, height.getWallHeight());
+        System.out.printf(success ? "Кот %s перепрыгнул препятствие высотой %d м.\n" :
+                "Кот %s не смог перепрыгнуть препятствие высотой %d м.\n", name, height.getWallHeight());
         return success;
     }
 }
