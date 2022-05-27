@@ -91,6 +91,13 @@ public class Main {
                         other();
                         active = false;
                     }
+                    case 9 -> {
+                        System.out.println(startLine);
+                        HW_I_9.show();
+                        System.out.println(endLine);
+                        other();
+                        active = false;
+                    }
                     case 0 -> {
                         System.out.println("\nЗавершаем процесс... Хорошего дня!");
                         active = false;
